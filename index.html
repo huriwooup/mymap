@@ -334,13 +334,8 @@
       let reviewCount = 0;
       for (const {place,result} of settled) {
         if (result.state !== "verified") {
-          reviewCount++;
-          const item = document.createElement("li");
-          item.textContent = `${place.name} — ${place.address} (${result.state === "error" ? "검색 오류" : "일치 결과 없음"})`;
-          document.getElementById("reviewList").append(item);
-          resultsElement.append(makePlaceButton(place,result));
-          continue;
-        }
+  continue;
+}
         const found = result.data;
         const position = new kakao.maps.LatLng(Number(found.y),Number(found.x));
         const marker = new kakao.maps.Marker({map,position,image:createMarkerImage(place.category)});
