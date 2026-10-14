@@ -210,6 +210,7 @@ function matchCandidate(place, candidate) {
                 return;
               }
               collected.push(...data);
+              console.log("검색 장소:", place.name);console.table(data.map(item => ({name: item.place_name,address: item.road_address_name,matched: matchCandidate(place, item)})));
               const matches = collected.filter(candidate => matchCandidate(place, candidate));
               if (matches.length > 0) {
                 // 서로 다른 카카오 장소가 같은 조건을 충족할 경우 자동으로 확정하지 않습니다.
