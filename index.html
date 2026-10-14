@@ -155,13 +155,37 @@
     }
 
     // 주소와 상호명이 모두 일치해야 좌표를 채택합니다.
-    function matchCandidate(place, candidate) {
-      const roadAddress = normalizeAddress(candidate.road_address_name);
-      const expectedAddress = normalizeAddress(place.address);
-      return roadAddress === expectedAddress && namesMatch(place.name, candidate.place_name) &&
-        Number.isFinite(Number(candidate.x)) && Number.isFinite(Number(candidate.y));
-    }
+    
+function matchCandidate(place, candidate) {
+  // 카카오맵에서 반환한 도로명주소
+  const roadAddress = normalizeAddress(candidate.road_address_name);
 
+  // 직접 등록한 도로명주소
+  const expectedAddress = normalizeAddress(place.address);
+
+  // 주소가 정확히 같거나 건물명 등 부가정보만 붙은 경우 허용
+  const addressMatches =
+    roadAddress === expectedAddress ||
+    (
+      roadAddress.startsWith(expectedAddress) &&
+      !/^[-\d]/.test(roadAddress.slice(expectedAddress.length))
+    );
+
+  // 상호명 확인
+  const nameMatches = namesMatch(
+    place.name,
+    candidate.place_name
+  );
+
+  // 좌표가 정상적인지 확인
+  const hasCoordinates =
+    candidate.x !== "" &&
+    candidate.y !== "" &&
+    Number.isFinite(Number(candidate.x)) &&
+    Number.isFinite(Number(candidate.y));
+
+  return addressMatches && nameMatches && hasCoordinates;
+}
     // 검색 결과의 여러 페이지를 확인하고, 실패하면 임의의 첫 결과를 사용하지 않습니다.
     function searchKeyword(keyword, place) {
       return new Promise((resolve) => {
